@@ -1,0 +1,95 @@
+CREATE TABLE bookings (
+    booking_id INT PRIMARY KEY AUTO_INCREMENT,
+    movie_id INT NOT NULL,
+    user_id INT NOT NULL,
+    seat_id INT NOT NULL,
+    movie_price DECIMAL(10,2) NOT NULL,
+    no_of_seats INT NOT NULL CHECK (no_of_seats > 0),
+    total_price DECIMAL(10,2) NOT NULL CHECK (total_price >= 0),
+    booking_date DATE DEFAULT CURRENT_DATE,
+    
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (seat_id) REFERENCES seat(seat_id) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE bookings (
+    booking_id INT AUTO_INCREMENT PRIMARY KEY,
+    movie_id INT NOT NULL,
+    user_id INT NOT NULL,
+    seat_id INT NOT NULL,
+    movie_price DECIMAL(10,2) NOT NULL,
+    no_of_seats INT NOT NULL CHECK (no_of_seats > 0),
+    total_price DECIMAL(10,2) NOT NULL CHECK (total_price >= 0),
+    booking_date DATE DEFAULT (CURRENT_DATE),
+    upi_id VARCHAR(50),
+    upi_password VARCHAR(50),
+    show_time VARCHAR(50),
+
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (seat_id) REFERENCES seats(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE bookings (
+    booking_id INT PRIMARY KEY AUTO_INCREMENT,
+    movie_id INT NOT NULL,
+    user_id INT NOT NULL,
+    seat_id text NOT NULL,
+    movie_price NOT NULL,
+    no_of_seats INT NOT NULL CHECK (no_of_seats > 0),
+    total_price DECIMAL(10,2) NOT NULL CHECK (total_price >= 0),
+    booking_date DATE DEFAULT CURRENT_DATE,
+    upi_id text,
+    upi_password text,
+    show_time text,
+    
+    FOREIGN KEY (movie_id) REFERENCES movies(movie_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (seat_id) REFERENCES seat(seat_id) ON DELETE CASCADE
+);
+
+CREATE TABLE seats (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    seat_id text,
+    movie_id int,
+    cinema_id int
+        
+       
+);
+CREATE TABLE seats (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    seat_id text NOT NULL,   -- text is heavy, VARCHAR is better
+    movie_id INT NOT NULL,
+    cinema_id INT NOT NULL,
+    
+    FOREIGN KEY (movie_id) REFERENCES movies(id) ON DELETE CASCADE,
+    FOREIGN KEY (cinema_id) REFERENCES cinemas(id) ON DELETE CASCADE
+);
+
+
+
+-----------------------------------------------
+data
+
+movies table 
+INSERT INTO `movies` (`id`, `movie_name`, `movie_img`, `available_in`, `language`, `duration`, `type`, `certification`, `release_date`, `movie_price`, `description`, `cast`, `cast_img`, `trailer`, `gradient`) VALUES ('1', 'Baaghi 4', 'baaghi 4.avif', '2D', 'Hindi', '2h 37m', ' Action', 'A', '2025-09-05', '150', 'A darker spirit, a bloodier mission. This time he is not the same!', 'Tiger Shroff, Sanjay Dutt, Harnaaz Kaur Sandhu, Sonam Bajwa', 'Tiger Shroff.avif, Sanjay Dutt.avif, Harnaaz Kaur Sandhu.avif, Sonam Bajwa.avif', 'https://in.bookmyshow.com/movies/rajkot/baaghi-4/ET00420244', '');
+
+
+
+
+-----------------------------------------------
+cinemas table
+
+INSERT INTO `cinemas` (`id`, `name`, `features`, `show_times`, `cancelation`) VALUES ('1', 'Cosmoplex Multiplex : Rajkot', 'M-Ticket', '06:45 PM, 07:30 PM, 10:00 PM', 'Non-cancellable');

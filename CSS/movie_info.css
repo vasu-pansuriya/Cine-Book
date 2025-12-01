@@ -1,0 +1,284 @@
+.header-bg .container header span{
+    letter-spacing: 6px;
+}
+
+.header-bg .container header ul{
+    letter-spacing: 3px;
+}
+
+.movie_info_container {
+    width: 100vw;
+    min-height: 50vh;
+    background-color: blanchedalmond;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* Enables responsiveness */
+    padding: 20px;
+    gap: 20px; /* Adds space between image and text */
+    margin-top: -24px;
+}
+
+/* Movie Image */
+.movie_img {
+    width: 35vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.movie_img img {
+    height: 43vh;
+    max-width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Movie Info */
+.movie_info {
+    width: 55vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.movie_info .movie_info_child {
+    /* background-color: cadetblue; */
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: #fff;
+}
+
+/* Responsive Text & Buttons */
+.movie_info .movie_info_child p {
+    font-size: clamp(1rem, 2vw, 1.2rem); /* Responsive paragraph font */
+    max-width: 100%;
+    letter-spacing: 1px;
+}
+
+/* Responsive Font Sizes */
+.movie_info .movie_info_child h1 {
+    font-size: clamp(1.8rem, 4vw, 3rem); /* Adjust size based on screen */
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.movie_info .movie_info_child .btns {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.movie_info .movie_info_child .btns .button {
+    padding: 12px 24px;
+    font-size: 2vh;
+    font-weight: bold;
+    color: white;
+    background: #ff3b30;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    letter-spacing: 1px;
+}
+
+.movie_info .movie_info_child .btns .button:hover {
+    background: #d62c1a;
+}
+
+/* About Movie */
+.description{
+    margin-top: 7vh;
+    height: fit-content;
+    width: 80vw;
+    margin-left: 5vw;
+    /* border-bottom: 1px solid rgb(229, 229, 229); */
+    background: linear-gradient(to bottom, #fff 99%, rgb(229, 229, 229) 1%);
+    background-size: 65vw 100%;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+}
+
+.description p{
+    margin-top: 30px;
+    width: 65vw;
+    letter-spacing: 1px;
+    padding-bottom: 30px;
+    /* background-color: aquamarine; */
+}
+
+/* cast */
+
+.cast {
+    margin-left: 5vw;
+    width: 80vw;
+}
+
+.cast .cast-container {
+    display: flex;
+    gap: 15px; /* Adds space between cast cards */
+    margin-top: 30px;
+    width: 100%;
+    overflow-x: auto; /* Enables horizontal scrolling */
+    white-space: nowrap;
+    padding-bottom: 10px; /* Avoids scrollbar overlapping content */
+}
+
+/* Customize scrollbar (optional) */
+.cast .cast-container::-webkit-scrollbar {
+    height: 8px; /* Small scrollbar height */
+}
+
+.cast .cast-container::-webkit-scrollbar-thumb {
+    background: #d62c1a; /* Scrollbar color */
+    border-radius: 10px;
+}
+
+.cast .cast-container .cast-cards {
+    flex: 0 0 auto; /* Ensures cards do not shrink */
+    text-align: center;
+}
+
+.cast .cast-container .cast-cards .cast_img {
+    border-radius: 50%;
+    margin: 0px 10px;
+}
+
+.cast .cast-container .cast-cards p {
+    text-align: center;
+    margin-top: 10px;
+}
+
+
+
+
+/* 
+.cast{
+    height: fit-content;
+    width: 80vw;
+    margin-left: 5vw;
+}
+
+.cast .cast_img{
+    border-radius: 70px;
+    margin-right: 40px;
+}
+
+.cast .cast_name{
+    display: flex;  
+}
+
+.cast .cast_name .name{
+    height: 50px;
+    width:120px;
+    margin-right: 40px;
+    padding: 5px;
+} */
+
+
+
+
+
+
+/* --------- Responsive Design --------- */
+
+/* @media (max-width: 768px) {
+    .movie_info_container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .movie_img, .movie_info {
+        width: 100%;
+    }
+
+    .movie_img img {
+        height: auto;
+        max-width: 80%;
+    }
+
+    .movie_info .movie_info_child p {
+        font-size: 2vh;
+    }
+
+    .movie_info .movie_info_child .btns .button {
+        padding: 10px 20px;
+        font-size: 1.8vh;
+    }
+} */
+
+
+/* Between 481px and 768px → Keep Horizontal */
+@media (max-width: 768px) {
+    .movie_info_container {
+        flex-wrap: nowrap;   /* Prevents vertical stacking */
+        gap: 10px;
+    }
+
+    .movie_img {
+        width: 40vw;
+    }
+
+    .movie_img img {
+        height: 40vh;
+    }
+
+    .movie_info {
+        width: 60vw;
+    }
+
+    .movie_info .movie_info_child p {
+        font-size: 2vh;
+    }
+
+    .cast .cast-container {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .cast .cast-container .cast-cards {
+        scroll-snap-align: start;
+    }
+}
+
+/*Below 480px → Stack Vertically */
+@media (max-width: 480px) {
+    .movie_info_container {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .movie_img, .movie_info {
+        width: 100%;
+    }
+
+    .movie_img img {
+        max-width: 90%;
+        height: auto;
+    }
+
+    .movie_info .movie_info_child {
+        padding: 15px;
+    }
+
+    .movie_info .movie_info_child p {
+        font-size: 1.8vh;
+    }
+
+    .movie_info .movie_info_child .btns {
+        flex-direction: column;
+    }
+
+    .movie_info .movie_info_child .btns .button {
+        width: 100%;
+        padding: 10px;
+    }
+}

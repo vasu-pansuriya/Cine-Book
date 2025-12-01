@@ -1,0 +1,128 @@
+#movie_name {
+  border-bottom: 2px solid rgb(229, 229, 229);
+  background-color: #fff;
+}
+.child-container {
+  display: flex;
+  margin-top: -5px;
+}
+
+.child-container p {
+  margin-right: 8px;
+  border-radius: 20px;
+  padding: 2px 6px;
+  color: rgb(102, 102, 102);
+  border: 1px solid rgb(102, 102, 102);
+  /* background-color: blueviolet; */
+}
+
+/* date conatienr */
+
+#date {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-top: 2.5vh;
+  padding-bottom: 2.5vh;
+  margin-top: 5vh;
+  border-bottom: 2px solid rgb(229, 229, 229);
+    background-color: #fff;
+}
+
+.date-card {
+  display: inline-block;
+  /* background-color: rgb(235, 78, 98); */
+  color: black;
+  text-align: center;
+  padding: 10px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.1s ease-in-out;
+}
+
+/* Selected date styling */
+.date-card.selected {
+  background-color: rgb(235, 78, 98);
+  color: #fff;
+}
+
+/* Hide scrollbar for a cleaner look (optional) */
+#date::-webkit-scrollbar {
+  height: 2px; /* Adjust scrollbar height */
+}
+
+#date::-webkit-scrollbar-thumb {
+  background: #888; /* Scrollbar color */
+  border-radius: 5px;
+}
+
+/* Cinema */
+
+#cinema-container {
+    margin-top: 5vh;
+    background-color: #fff;
+}
+
+.cinema-card {
+    border-bottom: 2px solid rgb(229, 229, 229);
+    padding: 15px;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    /* border-radius: 8px; */
+}
+
+.features {
+    margin-top: 20px;
+}
+
+.feature {
+    display: inline-block;
+    background-color: #f3f3f3;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-right: 12px;
+}
+
+.show-times {
+    margin-top: 20px;
+}
+
+.show-time {
+    background-color: #fff;
+    color: #28a745;
+    border: 1px solid rgb(182, 179, 179) ;
+    padding: 5px 15px;
+    margin-right: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: background-color 0.1s ease-in-out;
+}
+
+.show-time:hover {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.cancellation {
+    font-size: 14px;
+    color: gray;
+    margin-top: 10px;
+}
+
+
+
+
+
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  #date {
+    overflow-x: auto;
+  }
+}
