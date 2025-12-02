@@ -14,23 +14,34 @@ if ($id <= 0) {
 }
 
 // fetch movie image
-$stmt = $conn->prepare("SELECT movie_img FROM movies WHERE id = ?");
-$stmt->bind_param('i', $id);
-$stmt->execute();
-$stmt->bind_result($img);
-$stmt->fetch();
-$stmt->close();
+// $stmt = $conn->prepare("SELECT movie_img FROM movies WHERE id = ?");
+// $stmt->bind_param('i', $id);
+// $stmt->execute();
+// $stmt->bind_result($img);
+// $stmt->fetch();
+// $stmt->close();
 
 // delete DB row
 $stmt = $conn->prepare("DELETE FROM movies WHERE id = ?");
+
 $stmt->bind_param('i', $id);
+
+// Execute the deletion
 if ($stmt->execute()) {
-    // delete file if exists
-    if (!empty($img) && file_exists(__DIR__ . '/../uploads/movies/' . $img)) {
-        @unlink(__DIR__ . '/../uploads/movies/' . $img);
-    }
+    // Optional: Add a success message here before redirecting
+    $_SESSION['message'] = "Movie successfully deleted.";
+} else {
+    // Optional: Add an error message here
+    $_SESSION['error'] = "Error deleting record: " . $stmt->error;
 }
+
+// if ($stmt->execute()) {
+//     // delete file if exists
+//     if (!empty($img) && file_exists(__DIR__ . '/../uploads/movies/' . $img)) {
+//         @unlink(__DIR__ . '/../uploads/movies/' . $img);
+//     }
+// }
 $stmt->close();
 
-header('Location: movies.php');
+header('Location: ad_add_movies.php');
 exit;
