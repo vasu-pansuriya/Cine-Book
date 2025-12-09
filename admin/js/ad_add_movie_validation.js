@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return setError(movieImgInput, movieImgError, "Poster name/URL is required.");
         }
         // optional: basic extension check
-        const allowed = /\.(jpg|jpeg|png|webp)$/i;
+        const allowed = /\.(jpg|jpeg|png|avif|webp)$/i;
         if (!allowed.test(val) && !val.startsWith("http")) {
             return setError(movieImgInput, movieImgError, "Should be image file or valid URL.");
         }
