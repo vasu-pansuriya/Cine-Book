@@ -1,6 +1,10 @@
 <?php
 include 'db_connect.php';
 
+if (isset($_SESSION["username"])) {
+    $username = $_SESSION["username"];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -127,6 +131,9 @@ include 'db_connect.php';
                         <div class="text">Logout</div>
                     </button>
                     <img src="admin/img/user.png" alt="logo" height="45px" style="margin-left: 20px;" />
+                    <?php if (isset($username)): ?>
+                        <span class="text-light"><?= $username; ?></span>
+                    <?php endif; ?>
                 </ul>
 
 

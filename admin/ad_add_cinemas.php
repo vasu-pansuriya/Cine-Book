@@ -12,34 +12,18 @@ include '../db_connect.php';
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $movie_name   = trim($_POST['movie_name']);
-  $movie_img    = $_POST['movie_img'];
-  $available_in = $_POST['available_in'] ?? '';
-  $language     = trim($_POST['language']);
-  $duration     = $_POST['duration'] ?? '';
-  $type         = $_POST['type'] ?? '';
-  $cert         = trim($_POST['certification']);
-  $release      = $_POST['release_date'];
-  $price        = intval($_POST['movie_price']);
-  $description  = $_POST['description'] ?? '';
-  $cast         = $_POST['cast'] ?? '';
-  $cast_img     = $_POST['cast_img'] ?? '';
-  $trailer      = $_POST['trailer'] ?? '';
-  $gradient     = "default";
+  $cinema_name = trim($_POST['name']);
+  $features    = trim($_POST['features']);
+  $show_times  = trim($_POST['show_times']);
+  $cancelation = trim($_POST['cancelation']);
 
-  // NEW: premiere flag
-  $is_premiere  = isset($_POST['is_premiere']) ? 1 : 0;
-
-  if ($movie_name === '') $errors[] = "Movie name is required.";
+  if ($cinema_name === '') $errors[] = "Cinema name is required.";
 
   if (empty($errors)) {
-    $sql = "INSERT INTO movies 
-      (movie_name, movie_img, available_in, language, duration, type, certification, release_date, movie_price, description, `cast`, cast_img, trailer, gradient, is_premiere) 
-      VALUES 
-      ('$movie_name', '$movie_img', '$available_in', '$language', '$duration', '$type', '$cert', '$release', '$price', '$description', '$cast', '$cast_img', '$trailer', '$gradient', '$is_premiere')";
-
+    $sql = "INSERT INTO cinemas (name, features, show_times, cancelation) 
+            VALUES ('$cinema_name', '$features', '$show_times', '$cancelation')";
     if ($conn->query($sql) === TRUE) {
-      echo "<script>alert('Movie Added Successfully!'); window.location.href='ad_add_movies.php';</script>";
+      echo "<script>alert('Cinema Added Successfully!'); window.location.href='ad_add_cinemas.php';</script>";
       exit;
     } else {
       $errors[] = "DB Error: " . $conn->error;
@@ -54,11 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Movie - CineBook Admin</title>
+  <title>Add Cinema - CineBook Admin</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-  <!-- Validation JS (separate file) -->
-  <script src="js/ad_add_movie_validation.js" defer></script>
 
   <style>
     * {
@@ -157,22 +138,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .card textarea {
       width: 100%;
       padding: 10px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 15px;
       outline: none;
       transition: 0.2s;
-    }
-
-    .card input.input-error,
-    .card textarea.input-error {
-      border-color: #e63946;
-    }
-
-    .card input.input-valid,
-    .card textarea.input-valid {
-      border-color: #2ecc71;
     }
 
     .card button {
@@ -184,6 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       font-size: 16px;
       cursor: pointer;
       transition: 0.3s;
+      margin-top: 6px;
     }
 
     .card button:hover {
@@ -198,14 +170,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       margin-bottom: 15px;
     }
 
-    .field-error {
-      color: #e63946;
-      font-size: 12px;
-      min-height: 14px;
-      display: block;
-      margin-bottom: 4px;
-    }
-
     .footer {
       background: #1d1b31;
       color: white;
@@ -213,6 +177,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       padding: 15px 0;
       font-size: 16px;
       margin-top: auto;
+    }
+
+    .field-error {
+      color: #e63946;
+      font-size: 12px;
+      min-height: 14px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .input-error {
+      border-color: #e63946;
+    }
+
+    .input-valid {
+      border-color: #2ecc71;
     }
 
     @media (max-width:900px) {
@@ -234,15 +214,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         padding: 20px;
       }
     }
-
-    .checkbox-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-      margin-bottom: 12px;
-    }
   </style>
+
+  <!-- Common validation file -->
+  <script src="js/ad_cinemas_validation.js" defer></script>
 
 </head>
 
@@ -253,6 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 
   <div class="layout">
+
     <div class="sidebar">
       <a href="dashboard.php"><span class="icon material-icons">dashboard</span><span>Dashboard</span></a>
       <a href="ad_movies.php"><span class="icon material-icons">movie</span><span>Movies</span></a>
@@ -262,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="content">
-      <h2 class="page-title">Add New Movie</h2>
+      <h2 class="page-title">Add New Cinema</h2>
 
       <?php if (!empty($errors)): ?>
         <div class="errors">
@@ -271,40 +247,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <?php endif; ?>
 
       <div class="card">
+        <form method="post" id="addCinemaForm">
+          <label>Cinema Name</label>
+          <input type="text" name="name" id="cinema_name">
+          <span class="field-error" id="cinema_name_error"></span>
 
-        <form id="addMovieForm" method="post" enctype="multipart/form-data" style="max-width:800px;">
-          <label>Movie Name</label>
-          <input type="text" name="movie_name" id="movie_name">
-          <span class="field-error" id="movie_name_error"></span>
+          <label>Features</label>
+          <textarea name="features" id="features" rows="4"></textarea>
+          <span class="field-error" id="features_error"></span>
 
-          <label>Poster File Name / URL</label>
-          <input type="text" name="movie_img" id="movie_img">
-          <span class="field-error" id="movie_img_error"></span>
+          <label>Show Times</label>
+          <input type="text" name="show_times" id="show_times">
+          <span class="field-error" id="show_times_error"></span>
 
-          <label>Language</label>
-          <input type="text" name="language" id="language">
-          <span class="field-error" id="language_error"></span>
+          <label>Cancellation Policy</label>
+          <input type="text" name="cancelation" id="cancelation">
+          <span class="field-error" id="cancelation_error"></span>
 
-          <label>Certification</label>
-          <input type="text" name="certification" id="certification" placeholder="e.g. U, UA, A">
-          <span class="field-error" id="certification_error"></span>
-
-          <label>Price (Rs)</label>
-          <input type="number" name="movie_price" id="movie_price" min="0">
-          <span class="field-error" id="movie_price_error"></span>
-
-          <label>Release Date</label>
-          <input type="date" name="release_date" id="release_date">
-          <span class="field-error" id="release_date_error"></span>
-
-          <div class="checkbox-row">
-            <input type="checkbox" name="is_premiere" id="is_premiere" value="1">
-            <label for="is_premiere" style="margin:0;font-weight:normal;">
-              Mark as <b>Premiere / Blockbuster</b> movie (show on home page slider)
-            </label>
-          </div>
-
-          <button class="btn" type="submit">Add Movie</button>
+          <button type="submit">Add Cinema</button>
         </form>
       </div>
     </div>

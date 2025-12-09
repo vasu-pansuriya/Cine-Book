@@ -7,7 +7,6 @@ if (isset($_GET['id'])) {
     $movie_id = htmlspecialchars($_GET['id']);
 }
 
-
 // Fetch movie data
 $sql = "SELECT movie_name, language, type, certification FROM movies";
 $result = $conn->query($sql);
@@ -27,8 +26,6 @@ if ($result->num_rows > 0) {
 // Fetch cinemas
 $sql = "SELECT * FROM cinemas";
 $result = $conn->query($sql);
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,33 +41,25 @@ $result = $conn->query($sql);
             background-color: #f5f5f5;
         }
     </style>
-
-
 </head>
 
 <body id="body">
 
     <!-- header -->
-    <?php
-    include 'header.php'
-    ?>
+    <?php include 'header.php'; ?>
 
     <div class="container" id="movie_name">
-        <p>
-        <h1 style="letter-spacing: 4px;"> <?= $movies[$i]["movie_name"]; ?> </h1>
-        </p>
+        <h1 style="letter-spacing: 4px;"><?= htmlspecialchars($movies[$i]["movie_name"]); ?></h1>
         <div class="child-container">
-            <P><?= $movies[$i]["certification"]; ?></P>
+            <p><?= htmlspecialchars($movies[$i]["certification"]); ?></p>
 
             <?php foreach ($type_arr as $type) { ?>
-                <p><?php echo $type; ?></p>
+                <p><?= htmlspecialchars($type); ?></p>
             <?php } ?>
         </div>
-       
     </div>
 
     <!-- date -->
-
     <?php
     $selected_date = date("d-m-Y"); // Today's date in "DD-MM-YYYY" format
     $dates = [];
@@ -110,38 +99,22 @@ $result = $conn->query($sql);
     <!-- Hidden input to store the selected date -->
     <input type="hidden" id="selectedDate" value="<?= $booking_date; ?>">
 
-    <!-- Display selected date -->
-    <!-- <p id="selectedDateDisplay">Selected Date: <?= $booking_date; ?></p> -->
-
-
     <script>
         function selectDate(element, dateValue) {
-
-            // Remove 'selected' class from all date cards
             document.querySelectorAll(".date-card").forEach(card => {
                 card.classList.remove("selected");
             });
 
-            // Add 'selected' class to the clicked date card
             element.classList.add("selected");
-
-            // Store the selected date in a hidden input
             document.getElementById("selectedDate").value = dateValue;
-
-            // Display the selected date
-            document.getElementById("selectedDateDisplay").innerText = "Selected Date: " + dateValue;
         }
     </script>
 
-
-
     <!-- Cinema  -->
-
-
     <div class="container" id="cinema-container">
         <?php while ($row = $result->fetch_assoc()) { ?>
             <div class="cinema-card">
-                <h3><?= $row['name']; ?></h3>
+                <h3><?= htmlspecialchars($row['name']); ?></h3>
 
                 <?php if (!empty($row['features'])) { ?>
                     <?php
@@ -166,15 +139,13 @@ $result = $conn->query($sql);
                     foreach ($show_times as $time) { ?>
                         <button class="show-time"
                             onclick="storeSession(<?= $movie_id ?>, <?= $row['id']; ?>, '<?= trim($time); ?>')">
-                            <?= trim($time); ?>
+                            <?= htmlspecialchars(trim($time)); ?>
                         </button>
                     <?php } ?>
                 </div>
 
-
                 <script>
                     function storeSession(movieId, cinemaId, time) {
-
                         let date = document.getElementById('selectedDate').value;
 
                         fetch('seats.php', {
@@ -189,26 +160,19 @@ $result = $conn->query($sql);
                     }
                 </script>
 
-
-
-
-
-
-
-                <p class="cancellation"><?= $row['cancellation']; ?></p>
+                <!-- FIXED: use 'cancelation' (DB column) instead of 'cancellation' -->
+                <p class="cancellation">
+                    <?= !empty($row['cancelation']) ? htmlspecialchars($row['cancelation']) : ''; ?>
+                </p>
             </div>
         <?php } ?>
     </div>
 
-
-
-
     <br><br><br>
 
     <!-- footer -->
-    <?php
-    include 'footer.php'
-    ?>
+    <?php include 'footer.php'; ?>
+
 </body>
 
 </html>

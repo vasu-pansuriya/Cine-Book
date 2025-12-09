@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // If admin not logged in, redirect to login
 if (!isset($_SESSION['admin'])) {
@@ -7,6 +9,7 @@ if (!isset($_SESSION['admin'])) {
     exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -46,7 +49,7 @@ if (!isset($_SESSION['admin'])) {
         }
 
         .sidebar a:hover {
-            background: #051b52;
+            /* background: #051b52; */
         }
 
         .content {
@@ -79,8 +82,8 @@ if (!isset($_SESSION['admin'])) {
 
     <a href="dashboard.php">Dashboard</a>
     <a href="ad_movies.php">Movies</a>
-    <a href="cinemas.php">Cinemas</a>
-    <a href="users.php">Users</a>
+    <a href="ad_cinemas.php">Cinemas</a>
+    <a href="ad_users.php">Users</a>
     <a href="logout.php" style="color: red;">Logout</a>
 </div>
 
