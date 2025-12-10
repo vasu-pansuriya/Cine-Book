@@ -1,31 +1,31 @@
 <?php
 include 'db_connect.php';
+session_start();
 
-session_start(); // Start session
+// Get movie ID
+$movie_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-if (isset($_GET['id'])) {
-    $movie_id = htmlspecialchars($_GET['id']);
+if ($movie_id <= 0) {
+    die("Invalid Movie ID!");
 }
 
-// Fetch movie data
-$sql = "SELECT movie_name, language, type, certification FROM movies";
-$result = $conn->query($sql);
+// Fetch correct movie using WHERE id = ?
+$stmt = $conn->prepare("SELECT movie_name, language, type, certification FROM movies WHERE id = ?");
+$stmt->bind_param("i", $movie_id);
+$stmt->execute();
+$movie_result = $stmt->get_result();
 
-$i = $movie_id - 1;
-$j = 0; // used for $cast_array
-$movies = []; // Create an empty array
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $movies[] = $row; // Store each movie in an array
-    }
-    $type_string = $movies[$i]['type'];
-    $type_arr = explode(', ', $type_string);
+if ($movie_result->num_rows == 0) {
+    die("Movie not found!");
 }
+
+$movie = $movie_result->fetch_assoc();
+
+// Convert type into array
+$type_arr = explode(", ", $movie['type']);
 
 // Fetch cinemas
-$sql = "SELECT * FROM cinemas";
-$result = $conn->query($sql);
+$cinemas = $conn->query("SELECT * FROM cinemas");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,9 +49,10 @@ $result = $conn->query($sql);
     <?php include 'header.php'; ?>
 
     <div class="container" id="movie_name">
-        <h1 style="letter-spacing: 4px;"><?= htmlspecialchars($movies[$i]["movie_name"]); ?></h1>
+        <h1 style="letter-spacing: 4px;"><?= htmlspecialchars($movie["movie_name"]); ?></h1>
+
         <div class="child-container">
-            <p><?= htmlspecialchars($movies[$i]["certification"]); ?></p>
+            <p><?= htmlspecialchars($movie["certification"]); ?></p>
 
             <?php foreach ($type_arr as $type) { ?>
                 <p><?= htmlspecialchars($type); ?></p>
@@ -59,25 +60,18 @@ $result = $conn->query($sql);
         </div>
     </div>
 
-    <!-- date -->
+    <!-- Date Selection -->
     <?php
-    $selected_date = date("d-m-Y"); // Today's date in "DD-MM-YYYY" format
+    $selected_date = date("d-m-Y"); // today's date
     $dates = [];
 
-    // Generate the next 8 days
     for ($i = 0; $i < 8; $i++) {
         $date = strtotime("+$i days");
-        $formatted_date = date("d-m-Y", $date); // Format: DD-MM-YYYY
-        $day = strtoupper(date("D", $date));
-        $dateNum = date("d", $date);
-        $month = strtoupper(date("M", $date));
-
-        // Store date info in array
         $dates[] = [
-            'full_date' => $formatted_date,
-            'day' => $day,
-            'dateNum' => $dateNum,
-            'month' => $month
+            'full_date' => date("d-m-Y", $date),
+            'day' => strtoupper(date("D", $date)),
+            'dateNum' => date("d", $date),
+            'month' => strtoupper(date("M", $date)),
         ];
     }
     ?>
@@ -93,55 +87,49 @@ $result = $conn->query($sql);
         <?php endforeach; ?>
     </div>
 
-    <!-- user select booking date -->
-    <?php $booking_date = $selected_date; ?>
-
-    <!-- Hidden input to store the selected date -->
-    <input type="hidden" id="selectedDate" value="<?= $booking_date; ?>">
+    <!-- Hidden Selected Date -->
+    <input type="hidden" id="selectedDate" value="<?= $selected_date; ?>">
 
     <script>
-        function selectDate(element, dateValue) {
-            document.querySelectorAll(".date-card").forEach(card => {
-                card.classList.remove("selected");
-            });
-
-            element.classList.add("selected");
-            document.getElementById("selectedDate").value = dateValue;
+        function selectDate(elm, dateVal) {
+            document.querySelectorAll(".date-card").forEach(card => card.classList.remove("selected"));
+            elm.classList.add("selected");
+            document.getElementById("selectedDate").value = dateVal;
         }
     </script>
 
-    <!-- Cinema  -->
+    <!-- Cinema List -->
     <div class="container" id="cinema-container">
-        <?php while ($row = $result->fetch_assoc()) { ?>
+        <?php while ($row = $cinemas->fetch_assoc()) { ?>
             <div class="cinema-card">
                 <h3><?= htmlspecialchars($row['name']); ?></h3>
 
-                <?php if (!empty($row['features'])) { ?>
+                <!-- Features -->
+                <?php if (!empty($row['features'])): ?>
                     <?php
                     $features = explode(",", $row['features']);
-                    foreach ($features as $feature) {
+                    foreach ($features as $feature):
                         $feature = trim($feature);
-
                         if ($feature == "M-Ticket") {
-                            echo '<img src="movie img/phone.svg" height="22px" alt="M-Ticket" style="margin-right: 10px">';
-                            echo '<span class="feature" style="color:rgb(235, 78, 98)">M-Ticket</span>';
+                            echo '<img src="movie img/phone.svg" height="22px"><span style="color:rgb(235, 78, 98)"> M-Ticket</span>';
                         } else {
-                            echo '<img src="movie img/food.svg" height="22px" alt="Food & Beverage" style="margin-right: 10px">';
-                            echo '<span class="feature" style="color:rgb(242, 156, 28)">Food & Beverage</span>';
+                            echo '<img src="movie img/food.svg" height="22px"><span style="color:rgb(242, 156, 28)"> Food & Beverage</span>';
                         }
-                    }
+                    endforeach;
                     ?>
-                <?php } ?>
+                <?php endif; ?>
 
+                <!-- Show Times -->
                 <div class="show-times">
                     <?php
                     $show_times = explode(",", $row['show_times']);
-                    foreach ($show_times as $time) { ?>
+                    foreach ($show_times as $time):
+                    ?>
                         <button class="show-time"
                             onclick="storeSession(<?= $movie_id ?>, <?= $row['id']; ?>, '<?= trim($time); ?>')">
                             <?= htmlspecialchars(trim($time)); ?>
                         </button>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </div>
 
                 <script>
@@ -154,13 +142,11 @@ $result = $conn->query($sql);
                                 'Content-Type': 'application/x-www-form-urlencoded'
                             },
                             body: `movie_id=${movieId}&cinema_id=${cinemaId}&time=${encodeURIComponent(time)}&date=${encodeURIComponent(date)}`
-                        }).then(() => {
-                            window.location.href = 'seats.php';
-                        });
+                        }).then(() => window.location.href = 'seats.php');
                     }
                 </script>
 
-                <!-- FIXED: use 'cancelation' (DB column) instead of 'cancellation' -->
+                <!-- Cancellation Policy -->
                 <p class="cancellation">
                     <?= !empty($row['cancelation']) ? htmlspecialchars($row['cancelation']) : ''; ?>
                 </p>
